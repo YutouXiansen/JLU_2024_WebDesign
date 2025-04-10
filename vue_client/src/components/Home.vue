@@ -115,13 +115,20 @@ export default {
   /*background-color: #c6e2ff;*/
 }
 .body-layout{
+  height: 100%;
   width: 100%;
   flex-grow: 1;
   margin: 0px;
   padding: 0px;
   align-items: center;
   justify-content: center;
-  background-color: skyblue
+}
+.body-container
+{
+  height: 100%;
+  width: 100%;
+  background-image: url('../assets/JLUbackground.jpg');
+  background-size: cover
 }
 .footer-layout{
   width:100%;
@@ -140,10 +147,22 @@ export default {
   justify-content: center;
   background-color: #d9ecff;
 }
-.carousel-center
+.carousel-text-center
+{
+  text-align: center;
+  align-items: center;
+}
+.body-main
 {
   height: 100%;
-  text-align: center;
+  width: 60%;
+  align-content: center;
+}
+.body-aside
+{
+  height: 100%;
+  width: 40%;
+  align-content: center;
 }
 .carousel-text-center
 {
