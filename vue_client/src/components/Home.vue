@@ -56,13 +56,24 @@ export default {
         </el-row>
       </el-header>
       <el-body class="body-layout">
-        <el-carousel class="carousel-center">
-        <el-carousel-item v-for="item in imgList" :key="item.id">
-          <img :src="item.idView" height="90%" width="30%" alt="无图片">
-          <br>
-          <el-text font-size="30px" font-weight="bold">{{item.name}}</el-text>
-        </el-carousel-item>
-        </el-carousel>
+        <el-container class="body-container">
+          <el-main class="body-main">
+            <el-carousel class="carousel-text-center" indicator-position="outside" arrow="hover">
+              <el-carousel-item v-for="item in imgList" :key="item.id">
+                <img :src="item.idView" height="90%" width="30%">
+                <br>
+              <el-text size="large" tag="b">{{item.name}}</el-text>
+              </el-carousel-item>
+            </el-carousel>
+          </el-main>
+          <el-aside class="body-aside">
+            <el-card>
+              <template #header>这里是登录卡片</template>
+              <img src="../assets/Home/下载.jpg" height="90%" width="100%">
+              <template #footer>这里可以放确定登录按钮</template>
+            </el-card>
+          </el-aside>
+        </el-container>
       </el-body>
       <el-footer class="footer-layout">
         <el-row style="height: 100%;">
@@ -134,5 +145,28 @@ export default {
   height: 100%;
   text-align: center;
 }
-
+.carousel-text-center
+{
+  text-align: center;
+  align-items: center;
+}
+.body-main
+{
+  height: 100%;
+  width: 60%;
+  align-content: center;
+}
+.body-aside
+{
+  height: 100%;
+  width: 40%;
+  align-content: center;
+}
+.body-container
+{
+  height: 100%;
+  width: 100%;
+  background-image: url('../assets/Home/JLUbackground.jpg');
+  background-size: cover
+}
 </style>
