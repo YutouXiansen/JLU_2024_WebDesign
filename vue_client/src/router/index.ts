@@ -72,6 +72,11 @@ const router = createRouter({
                     name: 'AdministerInfoChange',
                     component: () => import('../components/Administer_plus/AdministerInfoChange.vue')
                 },
+                {
+                    path: 'Goods',
+                    name: 'Goods',
+                    component: () => import('../components/Goods/Goods.vue')
+                }
             ]
         },
         // 保留原来的独立登录路由，以便兼容现有代码
@@ -227,12 +232,6 @@ const router = createRouter({
                 ]
         },
         {
-            path: '/Goods',
-            name: 'Goods',
-            component: () => import('../components/Goods/Goods.vue')
-        }
-
-
     ],
 })
 

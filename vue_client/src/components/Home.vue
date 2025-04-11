@@ -80,6 +80,7 @@ const showBackButton = computed(() => {
           </el-main>
 
           <el-aside class="body-aside">
+
             <div class="component-container">
               <div class="component-header">
                 <h2>{{ currentTitle }}</h2>
