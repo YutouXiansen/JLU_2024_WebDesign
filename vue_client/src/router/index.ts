@@ -5,6 +5,28 @@ const router = createRouter({
     history: createWebHistory(), //路由器的工作模式
     routes: [ //一个个的路由规则
         {
+            path: '/', //首页路径
+            name: 'Home',
+            component: () => import('../components/Home.vue'),
+            children: [
+                {
+                    path: 'login', // 用户登录子路由
+                    name: 'Login',
+                    component: () => import('../components/views/Login.vue')
+                },
+                {
+                    path: 'adminlogin', // 管理员登录子路由
+                    name: 'Administerlogin',
+                    component: () => import('../components/views/Administerlogin.vue')
+                },
+                {
+                    path: 'register', // 用户注册子路由
+                    name: 'Register',
+                    component: () => import('../components/views/Register.vue')
+                }
+            ]
+        },
+        {
             path: '/Administer', //管理员访问路径
             name: 'Administer',
             component: () => import('../components/Administer.vue')
@@ -51,25 +73,19 @@ const router = createRouter({
                     component: () => import('../components/Administer_plus/AdministerInfoChange.vue')
                 },
             ]
-
         },
-        //用户登录界面
+        // 保留原来的独立登录路由，以便兼容现有代码
         {
             path: '/login',
-            name: 'Login',
-            component: () => import('../components/views/Login.vue'), // 动态导入 Login 组件
+            redirect: { name: 'Login' }
         },
-        //管理员登录界面
         {
             path: '/Administerlogin',
-            name: 'Administerlogin',
-            component: () => import('../components/views/Administerlogin.vue'), // 动态导入 Login 组件
+            redirect: { name: 'Administerlogin' }
         },
-        //注册界面
         {
             path: '/register',
-            name: 'Register',
-            component: () => import('../components/views/Register.vue'), // 动态导入 Register 组件
+            redirect: { name: 'Register' }
         },
         //用户界面
         {
@@ -138,30 +154,30 @@ const router = createRouter({
 
                     //正在配送的订单
                     {
-                        path : 'orders_delivering' ,
-                        name : 'OrdersDelivering' ,
-                        component : () => import('../components/User/UserPage/OrdersDelivering.vue')
+                        path: 'orders_delivering',
+                        name: 'OrdersDelivering',
+                        component: () => import('../components/User/UserPage/OrdersDelivering.vue')
                     }
                     ,
                     //已经到达的订单
                     {
-                        path : 'orders_delivered' ,
-                        name : 'OrdersDelivered' ,
-                        component : () => import('../components/User/UserPage/OrdersDelivered.vue')
+                        path: 'orders_delivered',
+                        name: 'OrdersDelivered',
+                        component: () => import('../components/User/UserPage/OrdersDelivered.vue')
                     }
                     ,
                     //申诉中的订单
                     {
-                        path : 'orders_appealing' ,
-                        name : 'OrdersAppealing' ,
-                        component : () => import('../components/User/UserPage/OrdersAppealing.vue')
+                        path: 'orders_appealing',
+                        name: 'OrdersAppealing',
+                        component: () => import('../components/User/UserPage/OrdersAppealing.vue')
                     }
                     ,
                     //已经完成的订单
                     {
-                        path : 'orders_accomplished' ,
-                        name : 'OrdersAccomplished' ,
-                        component : () => import('../components/User/UserPage/OrdersAccomplished.vue')
+                        path: 'orders_accomplished',
+                        name: 'OrdersAccomplished',
+                        component: () => import('../components/User/UserPage/OrdersAccomplished.vue')
                     }
                 ]
 
@@ -209,11 +225,6 @@ const router = createRouter({
                     }
 
                 ]
-        },
-        {
-            path: '/',
-            name: 'Home',
-            component: () => import('../components/Home.vue')
         },
         {
             path: '/Goods',
