@@ -69,7 +69,7 @@ export default {
           <el-aside class="body-aside">
             <el-card>
               <template #header>这里是登录卡片</template>
-              <img src="../assets/Home/下载.jpg" height="90%" width="100%">
+              <img src="../assets/Home/PRTS.jpg" height="90%" width="100%">
               <template #footer>这里可以放确定登录按钮</template>
             </el-card>
           </el-aside>
