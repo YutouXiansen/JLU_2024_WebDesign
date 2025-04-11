@@ -50,6 +50,11 @@ const router = createRouter({
                     name: 'AdministerInfoChange',
                     component: () => import('../components/Administer_plus/AdministerInfoChange.vue')
                 },
+                {
+                    path: 'Goods',
+                    name: 'Goods',
+                    component: () => import('../components/Goods/Goods.vue')
+                }
             ]
 
         },
@@ -215,12 +220,6 @@ const router = createRouter({
             name: 'Home',
             component: () => import('../components/Home.vue')
         },
-        {
-            path: '/Goods',
-            name: 'Goods',
-            component: () => import('../components/Goods/Goods.vue')
-        }
-
 
     ],
 })
