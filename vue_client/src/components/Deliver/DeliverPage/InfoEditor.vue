@@ -86,7 +86,7 @@
     formData.append('file', option.file);  // 添加文件到 formData 中
     
     try {
-      const response = await api.put('/user/upload/avatar', formData, {
+      const response = await api.put('/deliver/upload/avatar', formData, {
         headers: {
           'Content-Type': 'multipart/form-data' , // 确保是文件上传的表单格式
           authorization : UserStore.authorization,
