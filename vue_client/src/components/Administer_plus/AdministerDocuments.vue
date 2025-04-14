@@ -81,7 +81,7 @@ const querySearch = (queryString : any, cb : any)=>{
     function Agreement(index : any){
       origin_documents.value[index].status = 4
       documents.value[index].status = 4
-      api.post('/admin/orders/'+documents.value[index].id,{"status":4},{headers :{ authorization : AdminStore.authorization }})
+      api.put('/admin/orders/'+documents.value[index].id,{"status":4},{headers :{ authorization : AdminStore.authorization }})
       .then(res=>{
         console.log(res.data)
         alert("已同意退款")
