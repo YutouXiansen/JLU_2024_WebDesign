@@ -70,7 +70,7 @@ export default {
       },
       goToGoodsPage()
       {
-        this.$router.push('/Goods')
+        this.$router.push('/Administer/Goods')
       }
     }
   }
@@ -117,9 +117,9 @@ export default {
             <span>骑手</span>
           </el-menu-item>
         </el-sub-menu>
-        <el-menu-item index="2" @click="goToGoodsForSalePage()">
-          <el-icon><GoodsFilled /></el-icon>
-          <span>待售商品管理</span>
+        <el-menu-item index="2" @click="goToGoodsPage()">
+          <el-icon><ShoppingCart /></el-icon>
+          <span>商品管理</span>
         </el-menu-item>
         <el-sub-menu index="3">
           <template #title>
@@ -143,9 +143,9 @@ export default {
           <el-icon><List /></el-icon>
           <span>订单信息管理</span>
         </el-menu-item>
-        <el-menu-item index="5" @click="goToGoodsPage()">
-          <el-icon><ShoppingCart /></el-icon>
-          <span>商品管理</span>
+        <el-menu-item index="5" @click="goToGoodsForSalePage()" disabled>
+          <el-icon><GoodsFilled /></el-icon>
+          <span>待售商品管理</span>
         </el-menu-item>
       </el-menu>
       </el-aside>
@@ -171,15 +171,18 @@ export default {
 
 <style scoped>
 .common-layout{
+  max-height: 100vh;
   height: 100vh;
   width: 100vw;
   margin: 0px;
   padding: 0px;
   background-color: red;
+  
 }
 
 .base-layout{
-  height: 100%;
+  max-height: 100vh;
+  height: 100vh;
   width: 100%;
   margin: 0px;
   padding: 0px;
@@ -193,11 +196,9 @@ export default {
 }
 .body-layout{
   width: 100%;
-  height: (100vh-120px);
+  height: calc(100vh - 120px);
   margin: 0px;
   padding: 0px;
-  align-items: center;
-  justify-content: center;
   background-color: skyblue
 }
 .aside-layout{
@@ -209,7 +210,7 @@ export default {
 }
 .router-view-layout{
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 120px);
   margin: 0px;
   padding: 0px;
   background-color: white;

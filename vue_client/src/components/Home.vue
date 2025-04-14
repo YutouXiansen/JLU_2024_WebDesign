@@ -80,6 +80,7 @@ const showBackButton = computed(() => {
           </el-main>
 
           <el-aside class="body-aside">
+
             <div class="component-container">
               <div class="component-header">
                 <h2>{{ currentTitle }}</h2>
@@ -89,7 +90,7 @@ const showBackButton = computed(() => {
               <div class="component-content">
                 <!-- 默认内容，仅在主页路由时显示 -->
                 <div v-if="route.path === '/'" class="default-content">
-                  <img src="../assets/Home/下载.jpg" height="90%" width="100%">
+                  <img src="../assets/PRTS.jpg" height="90%" width="100%">
                   <p class="welcome-text">欢迎使用校园帮平台</p>
                 </div>
                 
