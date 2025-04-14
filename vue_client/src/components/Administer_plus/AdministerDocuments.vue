@@ -139,7 +139,7 @@ const querySearch = (queryString : any, cb : any)=>{
       <el-table-column prop="createTime" label="创建时间" width="180" />
       <el-table-column prop="updateTime" label="更新时间" width="180" />
       <el-table-column prop="arriveTime" label="到达时间" width="180" />
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="150px">
         <template #default="scope">
           <el-button type="primary" v-if="scope.row.status == 6" @click="Agreement(scope.$index)" >同意退款</el-button>
           <el-button type="danger" v-if="scope.row.status == 6" @click="Objection(scope.$index)" >拒绝退款</el-button>
