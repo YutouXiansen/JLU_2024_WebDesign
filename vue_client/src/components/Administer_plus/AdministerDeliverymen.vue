@@ -127,10 +127,10 @@ onMounted(()=>{
           <span v-if="scope.row.isDelete==1">已注销</span>
         </template>
       </el-table-column>
-      <el-table-column prop="action" label="操作" fixed="right" width="150">
+      <el-table-column prop="action" label="操作" fixed="right" width="100px">
         <template #default="scope">
-          <el-button type="danger" size="mini"  v-if="scope.row.status==0 && scope.row.isDelete==0" @click.native="() => {changeUserToDisabled(scope.$index)}">封禁</el-button>
-          <el-button type="primary" size="mini"  v-if="scope.row.status==1 && scope.row.isDelete==0" @click.native="() => {changeUserToNormal(scope.$index)}">解封</el-button>
+          <el-button type="danger" size="mini"  v-if="scope.row.status==0 && scope.row.isDelete==0" @click="() => {changeUserToDisabled(scope.$index)}">封禁</el-button>
+          <el-button type="primary" size="mini"  v-if="scope.row.status==1 && scope.row.isDelete==0" @click="() => {changeUserToNormal(scope.$index)}">解封</el-button>
           <span v-if="scope.row.isDelete==1">已注销</span>
         </template>
       </el-table-column>

@@ -128,7 +128,7 @@ function Objection(index : any){
           <span v-if="scope.row.status==2">已驳回</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column fixed="right" label="操作" width="100px">
         <template #default="scope">
           <el-button type="primary" size="mini" @click="Agreement(scope.$index)" v-if="scope.row.status==0">通过</el-button>
           <el-button type="danger" size="mini" @click="Objection(scope.$index)" v-if="scope.row.status==0">驳回</el-button>

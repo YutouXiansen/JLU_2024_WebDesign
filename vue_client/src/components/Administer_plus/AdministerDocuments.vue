@@ -119,7 +119,7 @@ const querySearch = (queryString : any, cb : any)=>{
       <el-table-column prop="appealPhotos" label="评论图片" width="180" >
         <template #default="scope">
           <div style="width: 110px;height: 110px;display: flex;align-items: center;">
-          <img :src="scope.row.appealPhoto" width="50px" height="50px" alt="没有图片">
+          <img :src="scope.row.appealPhotos" width="50px" height="50px" alt="没有图片">
           </div>
         </template>
       </el-table-column>
@@ -139,11 +139,13 @@ const querySearch = (queryString : any, cb : any)=>{
       <el-table-column prop="createTime" label="创建时间" width="180" />
       <el-table-column prop="updateTime" label="更新时间" width="180" />
       <el-table-column prop="arriveTime" label="到达时间" width="180" />
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="200px" fixed="right">
         <template #default="scope">
-          <el-button type="primary" v-if="scope.row.status == 6" @click="Agreement(scope.$index)" >同意退款</el-button>
-          <el-button type="danger" v-if="scope.row.status == 6" @click="Objection(scope.$index)" >拒绝退款</el-button>
-          <span type="primary" v-if="!(scope.row.status == 6)" >禁止操作</span>
+          <div class="button_center">
+            <el-button type="primary" v-if="scope.row.status == 6" @click="Agreement(scope.$index)" >同意退款</el-button>
+            <el-button type="danger" v-if="scope.row.status == 6" @click="Objection(scope.$index)" >拒绝退款</el-button>
+            <span type="primary" v-if="!(scope.row.status == 6)" >禁止操作</span>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -157,5 +159,9 @@ const querySearch = (queryString : any, cb : any)=>{
   margin: 0px;
   padding: 0px;
   background-color: greenyellow;
+}
+.button_center{
+  display: flex;
+  justify-content: center;
 }
 </style>
