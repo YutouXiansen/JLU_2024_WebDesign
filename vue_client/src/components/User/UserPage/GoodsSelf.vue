@@ -42,7 +42,7 @@
       <!-- 购买弹窗 -->
       <el-dialog 
         v-model="dialogVisible" 
-        title="确认购买"
+        title="确认修改"
         width="30%">
         <p>购买商品: {{ selectedGoods?.name }}</p>
         <el-input-number 
@@ -131,7 +131,7 @@ const scrollContainer = ref<HTMLElement | null>(null);
         const { code, msg, data } = response.data;
 
         if (code == 200) {
-          ElMessage.success(`购买 ${selectedGoods.value.name} 成功`);
+          ElMessage.success(`修改 ${selectedGoods.value.name} 成功`);
             dialogVisible.value = false;
         } else {
           ElMessage.error(`购买失败: ${msg}`);
