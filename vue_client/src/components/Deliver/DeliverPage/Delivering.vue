@@ -18,14 +18,14 @@
 
         <!-- Only show the button if the order status is NOT 2 (not yet delivered) -->
         <el-button 
-          v-if="item.status !== 2" 
+          v-if="item.status == 1" 
           type="primary" 
           @click="confirmDelivery(item)">
           确认送达
         </el-button>
         
         <!-- Show message if the order has already been delivered (status is 2) -->
-        <p v-if="item.status === 2" style="color: green;">已送达</p>
+        <p v-if="item.status != 1" style="color: green;">已送达</p>
       </el-card>
   
       <!-- 送达确认弹窗 -->
@@ -67,6 +67,7 @@ interface OrderItem {
   purchaseId: number;    // 购买者ID
   sellId: number;        // 卖家ID
   status: number;        // 订单状态
+  appealPhotos: string  //订单图片
 }
 
 // 定义 orders 为 OrderItem 数组类型

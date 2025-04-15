@@ -53,6 +53,7 @@ const showBackButton = computed(() => {
           <el-col :span="6" class="col-center-left">
             <img src="../assets/logo.jpg" alt="logo" id="logo" type="logo" height="60px" width="60px" />
             <el-text font-size="50px" font-weight="bold">校 园 帮</el-text>
+            <el-text class="campus-helper">Campus Helper</el-text>
           </el-col>
           <el-col :span="12" class="col-center-center">
           </el-col>
@@ -69,18 +70,7 @@ const showBackButton = computed(() => {
       </el-header>
       <el-body class="body-layout">
         <el-container class="body-container">
-          <el-main class="body-main">
-            <el-carousel class="carousel-text-center" indicator-position="outside" arrow="hover">
-              <el-carousel-item v-for="item in imgList" :key="item.id">
-                <img :src="item.idView" height="90%" width="30%">
-                <br>
-                <el-text size="large" tag="b">{{item.name}}</el-text>
-              </el-carousel-item>
-            </el-carousel>
-          </el-main>
-
           <el-aside class="body-aside">
-
             <div class="component-container">
               <div class="component-header">
                 <h2>{{ currentTitle }}</h2>
@@ -90,7 +80,7 @@ const showBackButton = computed(() => {
               <div class="component-content">
                 <!-- 默认内容，仅在主页路由时显示 -->
                 <div v-if="route.path === '/'" class="default-content">
-                  <img src="../assets/PRTS.jpg" height="90%" width="100%">
+                  <img src="../assets/JLU.jpg" height="90%" width="100%">
                   <p class="welcome-text">欢迎使用校园帮平台</p>
                 </div>
                 
@@ -99,7 +89,6 @@ const showBackButton = computed(() => {
               </div>
             </div>
           </el-aside>
-          
         </el-container>
       </el-body>
       <el-footer class="footer-layout">
@@ -154,6 +143,10 @@ const showBackButton = computed(() => {
   width: 100%;
   background-image: url('../assets/Home/JLUbackground.jpg');
   background-size: cover;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 50px;
 }
 
 .footer-layout{
@@ -176,20 +169,9 @@ const showBackButton = computed(() => {
   background-color: #d9ecff;
 }
 
-.carousel-text-center {
-  text-align: center;
-  align-items: center;
-}
-
-.body-main {
-  height: 100%;
-  width: 70%;
-  align-content: center;
-}
-
 .body-aside {
-  height: 100%;
-  width: 30%;
+  height: 90%;
+  width: 500px;
   align-content: center;
   padding: 25px 10px;
   display: flex;
@@ -241,5 +223,12 @@ const showBackButton = computed(() => {
   margin-top: 20px;
   font-size: 18px;
   color: #409EFF;
+}
+
+.campus-helper {
+  color: white;
+  font-size: 20px;
+  margin-left: 10px;
+  font-weight: bold;
 }
 </style>

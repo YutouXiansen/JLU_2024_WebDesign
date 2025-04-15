@@ -57,6 +57,7 @@ interface OrderItem {
   purchaseId: number;    //购买者ID
   sellId: number;        //卖家ID
   status: number;        //订单状态
+  //appealPhotos: string  //订单图片
 }
 
 // 定义 orders 为 OrderItem 数组类型

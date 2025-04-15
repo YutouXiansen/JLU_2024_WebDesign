@@ -9,6 +9,7 @@
       shadow="hover"
       style="width: 300px;"
     >
+    <img :src="item.photo" alt="商品图片" style="width: 100%; height: 200px; object-fit: cover;" />
       <h3 style="margin: 10px 0;">订单编号: {{ item.id }}</h3>
       <p>商品ID: {{ item.goodsId }}</p>
       <p>购买数量: {{ item.count }} 件</p>
@@ -69,6 +70,7 @@ interface OrderItem {
   sellId: number;        //卖家ID
   status: number;        //订单状态
   deliverName: string;    //配送骑手昵称
+  photo : string ;
 }
 
 // 定义 orders 为 OrderItem 数组类型
