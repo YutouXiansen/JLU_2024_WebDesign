@@ -128,12 +128,14 @@ function Objection(index : any){
           <span v-if="scope.row.status==2">已驳回</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100px">
+      <el-table-column fixed="right" label="操作" width="200px">
         <template #default="scope">
-          <el-button type="primary" size="mini" @click="Agreement(scope.$index)" v-if="scope.row.status==0">通过</el-button>
-          <el-button type="danger" size="mini" @click="Objection(scope.$index)" v-if="scope.row.status==0">驳回</el-button>
-          <span v-if="scope.row.complaintstatus==1">已通过</span>
-          <span v-if="scope.row.complaintstatus==2">已驳回</span>
+          <div class="button_center">
+            <el-button type="primary" size="mini" @click="Agreement(scope.$index)" v-if="scope.row.status==0">通过</el-button>
+            <el-button type="danger" size="mini" @click="Objection(scope.$index)" v-if="scope.row.status==0">驳回</el-button>
+            <span v-if="scope.row.complaintstatus==1">已通过</span>
+            <span v-if="scope.row.complaintstatus==2">已驳回</span>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -147,5 +149,9 @@ function Objection(index : any){
   margin: 0px;
   padding: 0px;
   background-color: violet;
+}
+.button_center{
+  display: flex;
+  justify-content: center;
 }
 </style>
