@@ -6,7 +6,6 @@
     import api from '@/api/request'
     //引入sotre 以存储管理员（包含authorization）
   import {useAdminStore} from '@/store/admin';
-  import { url } from 'inspector';
   const  AdminStore = useAdminStore();
 
 interface good {
