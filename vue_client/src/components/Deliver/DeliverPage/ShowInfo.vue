@@ -25,6 +25,20 @@
         <!-- 骑手统计信息 -->
         <el-descriptions-item label="总好评数" :span="3">{{ userInfo.commentAccount }}</el-descriptions-item>
         <el-descriptions-item label="总差评数" :span="3">{{ userInfo.badCommentAccount }}</el-descriptions-item>
+        <el-descriptions-item label="查看评价" :span="3">
+          <el-button type="primary" @click="commentDialog">查看评价</el-button>
+          <el-dialog v-model="commentDialogVisible" title="评论列表">
+          <el-table :data="comments" style="width: 100%">
+            <el-table-column prop="degree" label="评分" />
+            <el-table-column prop="description" label="评论描述" show-overflow-tooltip/>
+            <el-table-column prop="avatarUrl" label="评论图片" show-overflow-tooltip>
+              <template #default="scope">
+                <img :src="scope.row.avatarUrl" style="width: 50px; height: 50px;" alt="没有图片"/>
+              </template>
+            </el-table-column>
+          </el-table>
+          </el-dialog>
+        </el-descriptions-item>
       </el-descriptions>
     </div>
   </template>
@@ -34,6 +48,7 @@
   import man1 from '@/assets/HeadPortrait/man1.jpg'; // 使用 import 引入图片
   import api from '@/api/request'; // 导入封装好的axios实例
   import { useDeliverStore } from '@/store/deliver'; // user store库 （含authorization）
+import { UserInfo } from 'os';
   
   const UserStore = useDeliverStore(); //调用以获取该用户的authorization
   
@@ -53,9 +68,24 @@
     deliverAcount: '' // 总配送数
   });
   
+  interface CommentItem {
+  id: number,
+	commentId: number,
+	degree: number,
+	deliverId: number,
+	goodsId: number,
+	usersId: number,
+	avatarUrl: string,
+	description: string,
+	createTime: string,
+	updateTime: string,
+	isDelete: number,
+	status: number
+}
   // 加载状态
   const loading = ref(true);
-  
+  const comments = ref<CommentItem[]>([]); // 存储评论数据
+    const commentDialogVisible = ref(false); // 控制评论弹窗显示
   // 获取后端数据并更新 userInfo
   onMounted(async () => {
     try {
@@ -95,6 +125,22 @@
       loading.value = false; // 即使请求失败也停止加载状态
     }
   });
+
+  const commentDialog = async () => {
+  try {
+    const response = await api.get('/user/delivers/comment/'+userInfo.value.id, {
+      headers: {
+        authorization: UserStore.authorization
+      }
+    });
+    comments.value = response.data.data; // 将获取到的数据赋值给comments
+    console.log("商品评论信息", comments.value);
+    commentDialogVisible.value = true; // 显示评论弹窗
+  }
+  catch (error) {
+    console.error('获取商品评论信息失败：', error);
+  }
+}
   </script>
   
   <style scoped>

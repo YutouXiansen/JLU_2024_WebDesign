@@ -143,9 +143,9 @@ export default {
           <el-icon><List /></el-icon>
           <span>订单信息管理</span>
         </el-menu-item>
-        <el-menu-item index="5" @click="goToGoodsForSalePage()" disabled>
+        <el-menu-item index="5" @click="goToGoodsForSalePage()">
           <el-icon><GoodsFilled /></el-icon>
-          <span>待售商品管理</span>
+          <span>基本数据统计</span>
         </el-menu-item>
       </el-menu>
       </el-aside>

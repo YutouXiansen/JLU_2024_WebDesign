@@ -35,6 +35,20 @@
         <p>{{ item.description }}</p>
         <p>价格: {{ item.price }} 元</p>
         <p>余量: {{ item.amount }} 件</p>
+        <el-button @click="commentDialog(item)">
+          查看评论
+        </el-button>
+        <el-dialog v-model="commentDialogVisible" title="评论列表">
+          <el-table :data="comments" style="width: 100%">
+            <el-table-column prop="degree" label="评分" />
+            <el-table-column prop="description" label="评论描述" show-overflow-tooltip/>
+            <el-table-column prop="avatarUrl" label="评论图片" show-overflow-tooltip>
+              <template #default="scope">
+                <img :src="scope.row.avatarUrl" style="width: 50px; height: 50px;" alt="没有图片"/>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-dialog>
         <el-button v-if="item.amount > 0" type="primary" @click="openDialog(item)">
           购买
         </el-button>
@@ -89,12 +103,27 @@ interface GoodsItem {
   createTime: string;
 }
 
+interface CommentItem {
+  id: number,
+	commentId: number,
+	degree: number,
+	deliverId: number,
+	goodsId: number,
+	usersId: number,
+	avatarUrl: string,
+	description: string,
+	createTime: string,
+	updateTime: string,
+	isDelete: number,
+	status: number
+}
 // 定义goods为GoodsItem数组类型
 const goods = ref<GoodsItem[]>([]);
 const dialogVisible = ref(false); // 控制弹窗显示
+const commentDialogVisible = ref(false); // 控制评论弹窗显示
 const selectedGoods = ref<GoodsItem | null>(null); // 存储选中的商品
 const purchaseCount = ref(1); // 购买数量
-
+const comments = ref<CommentItem[]>([]); // 存储评论数据
 // 搜索和排序相关
 const searchQuery = ref('');
 const sortBy = ref('time-desc');
@@ -127,6 +156,22 @@ const openDialog = (item: GoodsItem) => {
   dialogVisible.value = true;
 };
 
+const commentDialog = async (item: GoodsItem) => {
+  try {
+    const response = await api.get('/user/goods/comment/'+item.id, {
+      headers: {
+        authorization: UserStore.authorization
+      }
+    });
+    comments.value = response.data.data; // 将获取到的数据赋值给comments
+    console.log("商品评论信息", comments.value);
+    commentDialogVisible.value = true; // 显示评论弹窗
+  }
+  catch (error) {
+    console.error('获取商品评论信息失败：', error);
+    ElMessage.error('获取商品评论信息失败');
+  }
+}
 // 确认购买操作
 const confirmPurchase = async () => {
   if (selectedGoods.value){ 
