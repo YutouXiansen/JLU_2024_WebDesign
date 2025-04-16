@@ -28,10 +28,10 @@
       <el-descriptions-item label="被申述次数":span="3"> {{ userInfo.complaintedCount }} </el-descriptions-item>
       <el-descriptions-item label="退换货次数":span="3"> {{ userInfo.exchangeCount}} </el-descriptions-item>
       <el-descriptions-item label="被退换货次数":span="3"> {{ userInfo.exchangedCount }} </el-descriptions-item>
-      <el-descriptions-item label="商品购买总数":span="3"> {{ userInfo.saleCount }} </el-descriptions-item>
-      <el-descriptions-item label="商品购买总额":span="3"> {{ userInfo.saleAccount }} </el-descriptions-item>
-      <el-descriptions-item label="卖出总数":span="3"> {{ userInfo.purchaseCount }} </el-descriptions-item>
-      <el-descriptions-item label="卖出总额":span="3"> {{ userInfo.purchaseAccount }} </el-descriptions-item>
+      <el-descriptions-item label="商品卖出总数":span="3"> {{ userInfo.saleCount }} </el-descriptions-item>
+      <el-descriptions-item label="商品卖出总额":span="3"> {{ userInfo.saleAccount }} </el-descriptions-item>
+      <el-descriptions-item label="购买总数":span="3"> {{ userInfo.purchaseCount }} </el-descriptions-item>
+      <el-descriptions-item label="购买总额":span="3"> {{ userInfo.purchaseAccount }} </el-descriptions-item>
 
     </el-descriptions>
   </div>

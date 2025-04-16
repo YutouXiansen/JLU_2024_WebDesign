@@ -9,8 +9,10 @@
       shadow="hover"
       style="width: 300px;"
     >
+    <img :src="item.photo" alt="商品图片" style="width: 100%; height: 200px; object-fit: cover;" />
       <h3 style="margin: 10px 0;">订单编号: {{ item.id }}</h3>
       <p>商品ID: {{ item.goodsId }}</p>
+      <p>商品名称: {{ item.goodsName }}</p>
       <p>购买数量: {{ item.count }} 件</p>
       <p>总价格: {{ item.totalPrice }} 元</p>
       <p>到达时间: {{ item.arriveTime }}</p>
@@ -50,6 +52,7 @@ const UserStore = useDeliverStore(); // 获取用户的authorization
 interface OrderItem {
   id: number;            // 订单编号
   goodsId: number;       //商品编号
+  goodsName: string;     //商品名称
   count: number;         //待送商品数目
   totalPrice: number;    //总价格
   arriveTime: string;    //订单送达时间
@@ -57,7 +60,7 @@ interface OrderItem {
   purchaseId: number;    //购买者ID
   sellId: number;        //卖家ID
   status: number;        //订单状态
-  //appealPhotos: string  //订单图片
+  photo: string  //订单图片
 }
 
 // 定义 orders 为 OrderItem 数组类型
