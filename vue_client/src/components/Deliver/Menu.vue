@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { Avatar,GoodsFilled, Box,PhoneFilled,Van,List, UserFilled,} from '@element-plus/icons-vue';
@@ -53,6 +52,10 @@ const goToWaitedDeliver = () => {
 
 const goToDelivering = () => {
   router.push('/deliver_menu/delivering')
+};
+
+const goToAllOrders = () => {
+  router.push('/deliver_menu/all_orders')
 };
 </script>
 

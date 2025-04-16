@@ -29,7 +29,16 @@
           <el-button type="primary" @click="commentDialog">查看评价</el-button>
           <el-dialog v-model="commentDialogVisible" title="评论列表">
           <el-table :data="comments" style="width: 100%">
-            <el-table-column prop="degree" label="评分" />
+            <el-table-column prop="degree" label="评分">
+              <template #default="scope">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <el-tag :type="scope.row.degree >= 4 ? 'success' : 'danger'">
+                    {{ scope.row.degree >= 4 ? '好评' : '差评' }}
+                  </el-tag>
+                  <span>{{ scope.row.degree }}分</span>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column prop="description" label="评论描述" show-overflow-tooltip/>
             <el-table-column prop="avatarUrl" label="评论图片" show-overflow-tooltip>
               <template #default="scope">
@@ -48,7 +57,6 @@
   import man1 from '@/assets/HeadPortrait/man1.jpg'; // 使用 import 引入图片
   import api from '@/api/request'; // 导入封装好的axios实例
   import { useDeliverStore } from '@/store/deliver'; // user store库 （含authorization）
-import { UserInfo } from 'os';
   
   const UserStore = useDeliverStore(); //调用以获取该用户的authorization
   
