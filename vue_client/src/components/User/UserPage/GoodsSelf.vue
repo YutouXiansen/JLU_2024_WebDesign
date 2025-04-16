@@ -51,8 +51,8 @@
         label-width="auto"
       >
         <!-- 商品名称 -->
-        <el-form-item label="商品名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入商品名称" />
+        <el-form-item label="商品名称">
+          <el-input v-model="formData.name" disabled />
         </el-form-item>
 
         <!-- 上传商品图片 -->
@@ -156,10 +156,6 @@ const formData = ref<FormData>({
 });
 
 const rules = {
-  name: [
-    { required: true, message: '请输入商品名称', trigger: 'blur' },
-    { min: 1, max: 50, message: '名称长度在 1 到 50 个字符', trigger: 'blur' }
-  ],
   description: [
     { required: true, message: '请输入商品描述', trigger: 'blur' },
     { min: 1, max: 200, message: '描述长度在 1 到 200 个字符', trigger: 'blur' }
@@ -248,7 +244,6 @@ const handleSubmit = async () => {
   try {
     const formDataObj = new FormData();
     formDataObj.append('data', JSON.stringify({
-      name: formData.value.name,
       description: formData.value.description,
       price: formData.value.price,
       amount: formData.value.amount,

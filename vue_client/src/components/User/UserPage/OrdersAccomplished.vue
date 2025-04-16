@@ -25,24 +25,97 @@
       <el-button type="primary" @click="startEvaluation(item)">评价</el-button>
 
       <!-- 评价对话框 -->
-      <el-dialog :visible.sync="dialogVisible" width="30%" title="订单评价">
-        <template v-if="step === 1">
-          <p>请对用户进行评价：</p>
-          <el-rate v-model="userRating" />
-          <el-button @click="nextStep" type="primary" style="margin-top: 20px;">下一步</el-button>
-        </template>
+      <el-dialog 
+        v-model="dialogVisible" 
+        width="40%" 
+        title="订单评价"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-form
+          :model="commentForm"
+          label-position="top"
+        >
+          <!-- 商品评价 -->
+          <el-form-item label="商品评价">
+            <div style="margin-bottom: 20px;">
+              <p style="margin-bottom: 10px;">商品评分:</p>
+              <el-rate v-model="commentForm.goodsDegree" />
+            </div>
+            <el-input
+              type="textarea"
+              v-model="commentForm.goodsDescription"
+              placeholder="请输入对商品的评价（可选）"
+              :maxlength="200"
+              show-word-limit
+              style="margin-top: 10px;"
+            />
+            <!-- 商品评价图片上传 -->
+            <el-upload
+              class="avatar-uploader"
+              :show-file-list="false"
+              :before-upload="(file: File) => beforeImageUpload(file, 'goods')"
+            >
+              <img v-if="commentForm.goodsPhotos[0]" :src="commentForm.goodsPhotos[0]" class="avatar" />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+          </el-form-item>
 
-        <template v-if="step === 2">
-          <p>请对骑手进行评价：</p>
-          <el-rate v-model="deliverRating" />
-          <el-button @click="nextStep" type="primary" style="margin-top: 20px;">下一步</el-button>
-        </template>
+          <!-- 商家评价 -->
+          <el-form-item label="商家评价">
+            <div style="margin-bottom: 20px;">
+              <p style="margin-bottom: 10px;">商家评分:</p>
+              <el-rate v-model="commentForm.sellerDegree" />
+            </div>
+            <el-input
+              type="textarea"
+              v-model="commentForm.sellerDescription"
+              placeholder="请输入对商家的评价（可选）"
+              :maxlength="200"
+              show-word-limit
+              style="margin-top: 10px;"
+            />
+            <!-- 商家评价图片上传 -->
+            <el-upload
+              class="avatar-uploader"
+              :show-file-list="false"
+              :before-upload="(file: File) => beforeImageUpload(file, 'seller')"
+            >
+              <img v-if="commentForm.sellerPhotos[0]" :src="commentForm.sellerPhotos[0]" class="avatar" />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+          </el-form-item>
 
-        <template v-if="step === 3">
-          <p>请对商品进行评价：</p>
-          <el-rate v-model="goodsRating" />
-          <el-button type="primary" @click="submitEvaluation" style="margin-top: 20px;">提交</el-button>
-        </template>
+          <!-- 骑手评价 -->
+          <el-form-item label="骑手评价" v-if="currentOrder?.deliverId">
+            <div style="margin-bottom: 20px;">
+              <p style="margin-bottom: 10px;">骑手评分:</p>
+              <el-rate v-model="commentForm.deliverDegree" />
+            </div>
+            <el-input
+              type="textarea"
+              v-model="commentForm.deliverDescription"
+              placeholder="请输入对骑手的评价（可选）"
+              :maxlength="200"
+              show-word-limit
+              style="margin-top: 10px;"
+            />
+            <!-- 骑手评价图片上传 -->
+            <el-upload
+              class="avatar-uploader"
+              :show-file-list="false"
+              :before-upload="(file: File) => beforeImageUpload(file, 'deliver')"
+            >
+              <img v-if="commentForm.deliverPhotos[0]" :src="commentForm.deliverPhotos[0]" class="avatar" />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+          </el-form-item>
+
+          <div style="text-align: right; margin-top: 20px;">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleSubmit">提交评价</el-button>
+          </div>
+        </el-form>
       </el-dialog>
     </el-card>
 
@@ -50,59 +123,88 @@
   </div>
 </template>
 
-
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import api from '@/api/request'; // 导入封装好的axios实例
-import { useUserStore } from '@/store/user'; // 调用用户的store获取authorization
+import api from '@/api/request';
+import { useUserStore } from '@/store/user';
+import { Plus } from '@element-plus/icons-vue';
 
-const UserStore = useUserStore(); // 获取用户的authorization
+const UserStore = useUserStore();
 
 // 定义订单接口
 interface OrderItem {
-  id: number;            // 订单编号
-  goodsId: number;       //商品编号
-  count: number;         //待送商品数目
-  totalPrice: number;    //总价格
-  arriveTime: string;    //订单送达时间
-  createTime: string;    //订单创建时间
-  purchaseId: number;    //购买者ID
-  sellId: number;        //卖家ID
-  status: number;        //订单状态
-  deliverName: string;    //配送骑手昵称
-  photo : string ;
-  goodsName: string;    //商品名称
+  id: number;
+  goodsId: number;
+  count: number;
+  totalPrice: number;
+  arriveTime: string;
+  createTime: string;
+  purchaseId: number;
+  sellId: number;
+  status: number;
+  deliverName: string;
+  photo: string;
+  goodsName: string;
+  deliverId: number;
 }
 
-// 定义 orders 为 OrderItem 数组类型
-const orders = ref<OrderItem[]>([]);
-const loadingMore = ref(false); // 是否正在加载更多
+// 定义评论表单接口
+interface CommentForm {
+  goodsDegree: number;
+  goodsDescription: string;
+  goodsPhotos: string[];
+  sellerDegree: number;
+  sellerDescription: string;
+  sellerPhotos: string[];
+  deliverDegree: number;
+  deliverDescription: string;
+  deliverPhotos: string[];
+}
 
-// 评价相关的状态
-const dialogVisible = ref(false); // 控制评价对话框是否显示
-const userRating = ref(0); // 用户评价分数
-const deliverRating = ref(0); // 骑手评价分数
-const goodsRating = ref(0); // 商品评价分数
-const step = ref(1); // 当前评价步骤，1: 用户，2: 骑手，3: 商品
+const orders = ref<OrderItem[]>([]);
+const loadingMore = ref(false);
+const dialogVisible = ref(false);
+const currentOrder = ref<OrderItem | null>(null);
+
+// 评论表单数据
+const commentForm = ref<CommentForm>({
+  goodsDegree: 0,
+  goodsDescription: '',
+  goodsPhotos: [],
+  sellerDegree: 0,
+  sellerDescription: '',
+  sellerPhotos: [],
+  deliverDegree: 0,
+  deliverDescription: '',
+  deliverPhotos: []
+});
+
+// 存储选择的图片文件
+const selectedFiles = ref<{
+  goods: File | null;
+  seller: File | null;
+  deliver: File | null;
+}>({
+  goods: null,
+  seller: null,
+  deliver: null
+});
 
 // 获取订单数据
 const fetchOrders = async () => {
   try {
     loadingMore.value = true;
-    // 获取所有订单数据的API请求
     const response = await api.get('/user/orders', {
       headers: {
-        authorization: UserStore.authorization // 获取用户的token
+        authorization: UserStore.authorization
       }
     });
 
     const data = response.data.data;
-    
-    // 过滤 status 为 7 的订单 // 获取已经完成还未评论的订单
     const filteredOrders = data.filter((order: OrderItem) => order.status === 7);
     if (filteredOrders.length > 0) {
-      orders.value = filteredOrders; // 将过滤后的订单赋值给 orders
+      orders.value = filteredOrders;
     } else {
       ElMessage.info('没有已经完成待评论的订单');
     }
@@ -114,33 +216,173 @@ const fetchOrders = async () => {
   }
 };
 
-// 初始化评价
-const startEvaluation = (item: OrderItem) => {
-  // 重置所有评价分数
-  console.log("Hello");
-  userRating.value = 0;
-  deliverRating.value = 0;
-  goodsRating.value = 0;
-  step.value = 1; // 重置到第一步
-  dialogVisible.value = true; // 显示评价对话框
+// 上传前阻止默认上传并保存文件
+const beforeImageUpload = (file: File, type: 'goods' | 'seller' | 'deliver') => {
+  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+  const isLt2M = file.size / 1024 / 1024 < 1;
+
+  if (!isJPG) {
+    ElMessage.error('上传图片格式必须是 JPG 或 PNG 格式!');
+    return false;
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传图片大小不能超过 1MB!');
+    return false;
+  }
+
+  // 取消默认上传，保存文件
+  selectedFiles.value[type] = file;
+  commentForm.value[`${type}Photos`] = [URL.createObjectURL(file)];
+  return false; // 阻止自动上传
 };
 
-// 进入下一步的逻辑
-const nextStep = () => {
-  if (step.value < 3) {
-    step.value += 1; // 进入下一步
+// 初始化评价
+const startEvaluation = (item: OrderItem) => {
+  currentOrder.value = item;
+  commentForm.value = {
+    goodsDegree: 0,
+    goodsDescription: '',
+    goodsPhotos: [],
+    sellerDegree: 0,
+    sellerDescription: '',
+    sellerPhotos: [],
+    deliverDegree: 0,
+    deliverDescription: '',
+    deliverPhotos: []
+  };
+  selectedFiles.value = {
+    goods: null,
+    seller: null,
+    deliver: null
+  };
+  dialogVisible.value = true;
+};
+
+// 处理表单提交
+const handleSubmit = async () => {
+  // 检查评分是否已填写
+  if (commentForm.value.goodsDegree === 0) {
+    ElMessage.error('请对商品进行评分');
+    return;
+  }
+  if (commentForm.value.sellerDegree === 0) {
+    ElMessage.error('请对商家进行评分');
+    return;
+  }
+  if (currentOrder.value?.deliverId && commentForm.value.deliverDegree === 0) {
+    ElMessage.error('请对骑手进行评分');
+    return;
+  }
+
+  try {
+    await submitEvaluation();
+  } catch (error) {
+    console.error('评价提交失败:', error);
+    ElMessage.error('评价提交失败，请重试');
   }
 };
 
 // 提交评价的处理逻辑
-const submitEvaluation = () => {
-  ElMessage.success('评价提交成功！');
-  dialogVisible.value = false; // 关闭评价对话框
+const submitEvaluation = async () => {
+  if (!currentOrder.value) return;
+  
+  try {
+    // 创建 FormData 对象
+    const formData = new FormData();
+    
+    // 提交商品评价
+    formData.append('data', JSON.stringify({
+      goodsId: String(currentOrder.value.goodsId),
+      deliverId: "null",
+      usersId: "null",
+      description: commentForm.value.goodsDescription || null,
+      degree: String(commentForm.value.goodsDegree)
+    }));
+    if (selectedFiles.value.goods) {
+      formData.append('file', selectedFiles.value.goods);
+    }
+    
+    // 打印商品评价的 FormData
+    console.log('商品评价 FormData 内容:');
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+    
+    await api.post('/user/comment', formData, {
+      headers: {
+        authorization: UserStore.authorization,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    // 提交商家评价
+    formData.delete('data');
+    formData.delete('file');
+    formData.append('data', JSON.stringify({
+      usersId: String(currentOrder.value.sellId),
+      deliverId: "null",
+      goodsId: "null",
+      description: commentForm.value.sellerDescription || null,
+      degree: String(commentForm.value.sellerDegree)
+    }));
+    if (selectedFiles.value.seller) {
+      formData.append('file', selectedFiles.value.seller);
+    }
+    
+    // 打印商家评价的 FormData
+    console.log('商家评价 FormData 内容:');
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+    
+    await api.post('/user/comment', formData, {
+      headers: {
+        authorization: UserStore.authorization,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    // 如果有骑手ID，提交骑手评价
+    if (currentOrder.value.deliverId) {
+      formData.delete('data');
+      formData.delete('file');
+      formData.append('data', JSON.stringify({
+        deliverId: String(currentOrder.value.deliverId),
+        goodsId: "null",
+        usersId: "null",
+        description: commentForm.value.deliverDescription || null,
+        degree: String(commentForm.value.deliverDegree)
+      }));
+      if (selectedFiles.value.deliver) {
+        formData.append('file', selectedFiles.value.deliver);
+      }
+      
+      // 打印骑手评价的 FormData
+      console.log('骑手评价 FormData 内容:');
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+      
+      await api.post('/user/comment', formData, {
+        headers: {
+          authorization: UserStore.authorization,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
+
+    ElMessage.success('评价提交成功！');
+    dialogVisible.value = false;
+    await fetchOrders(); // 重新获取订单列表
+  } catch (error) {
+    console.error('评价提交失败:', error);
+    ElMessage.error('评价提交失败，请重试');
+  }
 };
 
 // 初始化加载订单
 onMounted(() => {
-  fetchOrders(); // 第一次加载订单
+  fetchOrders();
 });
 </script>
 
@@ -161,5 +403,30 @@ onMounted(() => {
 
 .dialog-footer {
   text-align: right;
+}
+
+.avatar-uploader .avatar {
+  width: 200px;
+  height: 200px;
+  display: block;
+  object-fit: cover;
+  border: 3px solid #000;
+  border-radius: 0px;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 150px;
+  height: 150px;
+  text-align: center;
 }
 </style>

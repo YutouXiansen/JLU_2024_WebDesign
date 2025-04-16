@@ -91,8 +91,34 @@ onMounted(async () => {
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     };
 
-    console.log(data);
-    console.log( data.avatarurl, "展示信息部分 ， 用户头像存储在OSS的URL");
+    // 打印原始用户数据
+    console.log('原始用户数据:', data);
+    
+    // 打印格式化后的用户信息
+    console.log('格式化后的用户信息:', {
+      id: data.id,
+      role: data.role,
+      name: data.name || '无昵称',
+      telephone: data.telephone || '请填入手机号',
+      email: data.email,
+      location: data.location || '请填入地址',
+      description: data.description || '暂无个性签名',
+      createTime: formatDate(data.createTime),
+      updateTime: formatDate(data.updateTime),
+      avatarurl: data.avatarurl || man1,
+      complaintCount: data.complaintCount,
+      complaintedCount: data.complaintedCount,
+      exchangeCount: data.exchangeCount,
+      exchangedCount: data.exchangedCount,
+      saleCount: data.saleCount,
+      saleAccount: data.saleAccount,
+      purchaseCount: data.purchaseCount,
+      purchaseAccount: data.purchaseAccount
+    });
+
+    // 打印头像URL
+    console.log('用户头像URL:', data.avatarurl || man1);
+    
     // 将后端返回的用户数据更新到 userInfo
     userInfo.value = {
       id: data.id,
