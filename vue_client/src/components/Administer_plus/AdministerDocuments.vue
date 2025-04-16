@@ -11,8 +11,11 @@ import api from '@/api/request'
 interface document{
   id: number,
   purchaseId: number,
+  purchaseName: string,
   goodsId: number,
+  goodsName: string,
   deliverId: number,
+  deliverName: string,
   count: number,
   totalPrice: number,
   appealDescription: string,
@@ -111,12 +114,15 @@ const querySearch = (queryString : any, cb : any)=>{
     <el-table :data="documents" style="width: 100%" stripe border="true" height="600px">
       <el-table-column prop="id" label="订单号" width="180" />
       <el-table-column prop="purchaseId" label="购买者ID" width="180" />
+      <el-table-column prop="purchaseName" label="购买者姓名" width="180" />
       <el-table-column prop="goodsId" label="商品ID" width="180" />
+      <el-table-column prop="goodsName" label="商品名称" width="180" />
       <el-table-column prop="deliverId" label="配送员ID" width="180" />
+      <el-table-column prop="deliverName" label="配送员姓名" width="180" />
       <el-table-column prop="count" label="数量" width="180" />
       <el-table-column prop="totalPrice" label="总价" width="180" />
-      <el-table-column prop="appealDescription" label="评论描述" width="180" />
-      <el-table-column prop="appealPhotos" label="评论图片" width="180" >
+      <el-table-column prop="appealDescription" label="申诉描述" width="180" />
+      <el-table-column prop="appealPhotos" label="申诉图片" width="180" >
         <template #default="scope">
           <div style="width: 110px;height: 110px;display: flex;align-items: center;">
           <img :src="scope.row.appealPhotos" width="50px" height="50px" alt="没有图片">
