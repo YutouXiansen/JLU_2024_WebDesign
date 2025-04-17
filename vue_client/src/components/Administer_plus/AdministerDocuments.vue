@@ -129,7 +129,7 @@ const querySearch = (queryString : any, cb : any)=>{
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="180" >
+      <el-table-column prop="status" label="状态" width="180" sortable>
         <template #default="scope">
         <span v-if="scope.row.status == 0">未配送</span>
         <span v-else-if="scope.row.status == 1">已配送</span>

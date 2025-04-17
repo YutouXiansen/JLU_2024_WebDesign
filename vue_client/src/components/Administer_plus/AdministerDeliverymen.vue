@@ -117,8 +117,8 @@ onMounted(()=>{
       </el-table-column>
       <el-table-column prop="email" label="骑手邮箱" show-overflow-tooltip/>
       <el-table-column prop="phone" label="骑手电话" show-overflow-tooltip/>
-      <el-table-column prop="commentAccount" label="好评数" show-overflow-tooltip/>
-      <el-table-column prop="badCommentAccount" label="差评数" show-overflow-tooltip/>
+      <el-table-column prop="commentAccount" label="好评数" show-overflow-tooltip sortable/>
+      <el-table-column prop="badCommentAccount" label="差评数" show-overflow-tooltip sortable/>
       <el-table-column prop="delivery_count" sortable label="骑手商品邮寄总单数" />
       <el-table-column prop="status" sortable label="用户状态" >
         <template #default="scope">

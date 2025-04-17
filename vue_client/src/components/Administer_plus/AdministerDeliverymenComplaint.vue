@@ -111,8 +111,8 @@ function Objection(index : any){
     <el-table :data="deliverymencomplaint" style="width: 100%" stripe border="true" height="600px">
       <el-table-column prop="id" label="ID" />
       <el-table-column prop="commentId" label="评论ID" />
-      <el-table-column prop="degree" label="评分" />
-      <el-table-column prop="deliverId" label="骑手ID" />
+      <el-table-column prop="degree" label="评分" sortable/>
+      <el-table-column prop="deliverId" label="骑手ID" sortable/>
       <el-table-column prop="avatarUrl" label="评论图片" show-overflow-tooltip>
         <template #default="scope">
           <img :src="scope.row.avatarUrl" style="width: 50px; height: 50px;" alt="没有图片"/>
