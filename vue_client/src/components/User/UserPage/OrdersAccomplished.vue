@@ -17,7 +17,15 @@
       <p>总价格: {{ item.totalPrice }} 元</p>
       <p>到达时间: {{ item.arriveTime }}</p>
       <p>创建时间: {{ item.createTime }}</p>
-      <p style="color: #808080; font-weight: bold; font-size: 16px; letter-spacing: 1px;">
+      <p :style="{
+        color: item.status === 7 ? '#67C23A' : 
+               item.status === 4 ? '#67C23A' : 
+               item.status === 5 ? '#F56C6C' : 
+               '#909399',
+        fontWeight: 'bold',
+        fontSize: '16px',
+        letterSpacing: '1px'
+      }">
         {{ item.status === 7 ? '已完成' : 
            item.status === 4 ? '商家同意退款' : 
            item.status === 5 ? '商家不同意退款' : 

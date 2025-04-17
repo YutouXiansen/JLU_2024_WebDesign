@@ -174,7 +174,7 @@ const goToOrdersAppealing= () => {
 
             <el-menu-item index="1-5" @click="goToOrdersAppealing()">
                 
-                <span>申诉中</span>
+                <span>申诉</span>
             </el-menu-item>
 
             <el-menu-item index="1-5" @click="goToOrdersAccomplushed()">
