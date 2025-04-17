@@ -18,7 +18,10 @@
       <p>到达时间: {{ item.arriveTime }}</p>
       <p>创建时间: {{ item.createTime }}</p>
       <p style="color: #808080; font-weight: bold; font-size: 16px; letter-spacing: 1px;">
-        已完成
+        {{ item.status === 7 ? '已完成' : 
+           item.status === 4 ? '商家同意退款' : 
+           item.status === 5 ? '商家不同意退款' : 
+           '未知状态' }}
       </p>
       
       <!-- 评价按钮 -->
@@ -202,11 +205,15 @@ const fetchOrders = async () => {
     });
 
     const data = response.data.data;
-    const filteredOrders = data.filter((order: OrderItem) => order.status === 7);
+    const filteredOrders = data.filter((order: OrderItem) => 
+      order.status === 7 || // 已完成
+      order.status === 4 || // 商家同意退款
+      order.status === 5    // 商家不同意退款
+    );
     if (filteredOrders.length > 0) {
       orders.value = filteredOrders;
     } else {
-      ElMessage.info('没有已经完成待评论的订单');
+      ElMessage.info('没有符合条件的订单');
     }
 
     loadingMore.value = false;
