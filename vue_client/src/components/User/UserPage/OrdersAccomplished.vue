@@ -287,17 +287,30 @@ const submitEvaluation = async () => {
   if (!currentOrder.value) return;
   
   try {
+    console.log('开始提交评价，订单信息:', {
+      orderId: currentOrder.value.id,
+      goodsId: currentOrder.value.goodsId,
+      goodsName: currentOrder.value.goodsName
+    });
+    
     // 创建 FormData 对象
     const formData = new FormData();
     
     // 提交商品评价
-    formData.append('data', JSON.stringify({
+    const goodsCommentData = {
       goodsId: String(currentOrder.value.goodsId),
-      deliverId: "null",
-      usersId: "null",
+      deliverId: null,
+      usersId: null,
       description: commentForm.value.goodsDescription || null,
       degree: String(commentForm.value.goodsDegree)
-    }));
+    };
+    
+    console.log('准备提交商品评价:', {
+      data: goodsCommentData,
+      hasImage: !!selectedFiles.value.goods
+    });
+    
+    formData.append('data', JSON.stringify(goodsCommentData));
     if (selectedFiles.value.goods) {
       formData.append('file', selectedFiles.value.goods);
     }
@@ -308,23 +321,35 @@ const submitEvaluation = async () => {
       console.log(`${key}:`, value);
     }
     
-    await api.post('/user/comment', formData, {
+    const goodsResponse = await api.post('/user/comment', formData, {
       headers: {
         authorization: UserStore.authorization,
         'Content-Type': 'multipart/form-data'
       }
     });
+    
+    console.log('商品评价提交响应:', {
+      status: goodsResponse.status,
+      data: goodsResponse.data
+    });
 
     // 提交商家评价
     formData.delete('data');
     formData.delete('file');
-    formData.append('data', JSON.stringify({
+    const sellerCommentData = {
       usersId: String(currentOrder.value.sellId),
-      deliverId: "null",
-      goodsId: "null",
+      deliverId: null,
+      goodsId: null,
       description: commentForm.value.sellerDescription || null,
       degree: String(commentForm.value.sellerDegree)
-    }));
+    };
+    
+    console.log('准备提交商家评价:', {
+      data: sellerCommentData,
+      hasImage: !!selectedFiles.value.seller
+    });
+    
+    formData.append('data', JSON.stringify(sellerCommentData));
     if (selectedFiles.value.seller) {
       formData.append('file', selectedFiles.value.seller);
     }
@@ -335,24 +360,36 @@ const submitEvaluation = async () => {
       console.log(`${key}:`, value);
     }
     
-    await api.post('/user/comment', formData, {
+    const sellerResponse = await api.post('/user/comment', formData, {
       headers: {
         authorization: UserStore.authorization,
         'Content-Type': 'multipart/form-data'
       }
+    });
+    
+    console.log('商家评价提交响应:', {
+      status: sellerResponse.status,
+      data: sellerResponse.data
     });
 
     // 如果有骑手ID，提交骑手评价
     if (currentOrder.value.deliverId) {
       formData.delete('data');
       formData.delete('file');
-      formData.append('data', JSON.stringify({
+      const deliverCommentData = {
         deliverId: String(currentOrder.value.deliverId),
-        goodsId: "null",
-        usersId: "null",
+        goodsId: null,
+        usersId: null,
         description: commentForm.value.deliverDescription || null,
         degree: String(commentForm.value.deliverDegree)
-      }));
+      };
+      
+      console.log('准备提交骑手评价:', {
+        data: deliverCommentData,
+        hasImage: !!selectedFiles.value.deliver
+      });
+      
+      formData.append('data', JSON.stringify(deliverCommentData));
       if (selectedFiles.value.deliver) {
         formData.append('file', selectedFiles.value.deliver);
       }
@@ -363,11 +400,16 @@ const submitEvaluation = async () => {
         console.log(`${key}:`, value);
       }
       
-      await api.post('/user/comment', formData, {
+      const deliverResponse = await api.post('/user/comment', formData, {
         headers: {
           authorization: UserStore.authorization,
           'Content-Type': 'multipart/form-data'
         }
+      });
+      
+      console.log('骑手评价提交响应:', {
+        status: deliverResponse.status,
+        data: deliverResponse.data
       });
     }
 
