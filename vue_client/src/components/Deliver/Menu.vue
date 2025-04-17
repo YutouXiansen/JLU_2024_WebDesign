@@ -53,10 +53,6 @@ const goToWaitedDeliver = () => {
 const goToDelivering = () => {
   router.push('/deliver_menu/delivering')
 };
-
-const goToAllOrders = () => {
-  router.push('/deliver_menu/all_orders')
-};
 </script>
 
 <template>

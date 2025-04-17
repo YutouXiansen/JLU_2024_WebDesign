@@ -87,11 +87,7 @@ const fetchOrders = async () => {
     console.log("当前获得的订单", data);
     
     if (data.length > 0) {
-      // 过滤出status == 0的订单
-      orders.value = data.filter((order: OrderItem) => order.status === 0);
-      if (orders.value.length === 0) {
-        ElMessage.info('没有待接单的订单');
-      }
+      orders.value = data; // 一次性将所有数据赋值给 orders
     } else {
       ElMessage.info('没有订单数据');
     }

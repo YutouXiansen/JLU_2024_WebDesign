@@ -26,16 +26,108 @@
         <el-button @click="commentDialog(item)">
           查看评论
         </el-button>
-        <el-dialog v-model="commentDialogVisible" title="评论列表">
-          <el-table :data="comments" style="width: 100%">
-            <el-table-column prop="degree" label="评分" />
-            <el-table-column prop="description" label="评论描述" show-overflow-tooltip/>
-            <el-table-column prop="avatarUrl" label="评论图片" show-overflow-tooltip>
-              <template #default="scope">
-                <img :src="scope.row.avatarUrl" style="width: 50px; height: 50px;" alt="没有图片"/>
+        <el-dialog 
+          v-model="commentDialogVisible" 
+          title="评论列表" 
+          width="70%"
+          :destroy-on-close="false"
+          :close-on-click-modal="false"
+          :close-on-press-escape="false"
+          :append-to-body="true"
+        >
+          <!-- 评论统计信息 -->
+          <div style="margin-bottom: 20px;">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-statistic title="总评论数" :value="comments.length" />
+              </el-col>
+              <el-col :span="8">
+                <el-statistic title="好评数" :value="comments.filter(c => c.degree >= 4).length" />
+              </el-col>
+              <el-col :span="8">
+                <el-statistic title="差评数" :value="comments.filter(c => c.degree < 4).length" />
+              </el-col>
+            </el-row>
+          </div>
+
+          <!-- 搜索和筛选 -->
+          <div style="margin-bottom: 20px; display: flex; gap: 20px;">
+            <el-input
+              v-model="commentSearchQuery"
+              placeholder="搜索评论内容"
+              clearable
+              style="width: 200px;"
+            >
+              <template #prefix>
+                <el-icon><Search /></el-icon>
               </template>
-            </el-table-column>
-          </el-table>
+            </el-input>
+            
+            <el-select v-model="commentFilterBy" placeholder="评论类型" clearable>
+              <el-option label="全部" value="all" />
+              <el-option label="好评" value="good" />
+              <el-option label="差评" value="bad" />
+            </el-select>
+
+            <el-select v-model="commentSortBy" placeholder="排序方式">
+              <el-option label="最新评论" value="time-desc" />
+              <el-option label="最早评论" value="time-asc" />
+              <el-option label="评分从高到低" value="degree-desc" />
+              <el-option label="评分从低到高" value="degree-asc" />
+            </el-select>
+          </div>
+
+          <!-- 评论表格 -->
+          <el-skeleton v-if="loading" :rows="5" animated />
+          <template v-else>
+            <el-table 
+              :data="sortedAndFilteredComments.slice((currentPage-1)*pageSize, currentPage*pageSize)" 
+              style="width: 100%"
+              :row-key="(row: CommentItem) => row.id"
+              :lazy="true"
+              :max-height="400"
+            >
+              <el-table-column prop="degree" label="评分" width="200">
+                <template #default="scope">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <el-rate v-model="scope.row.degree" disabled show-score />
+                    <el-tag :type="scope.row.degree >= 4 ? 'success' : 'danger'">
+                      {{ scope.row.degree >= 4 ? '好评' : '差评' }}
+                    </el-tag>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="description" label="评论描述" show-overflow-tooltip min-width="200"/>
+              <el-table-column prop="avatarUrl" label="评论图片" width="100">
+                <template #default="scope">
+                  <el-image 
+                    v-if="scope.row.avatarUrl"
+                    :src="scope.row.avatarUrl"
+                    :preview-src-list="[scope.row.avatarUrl]"
+                    style="width: 50px; height: 50px; cursor: pointer;"
+                    fit="cover"
+                    loading="lazy"
+                  />
+                  <span v-else>无图片</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="createTime" label="评论时间" width="150">
+                <template #default="scope">
+                  {{ formatDate(scope.row.createTime) }}
+                </template>
+              </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <el-pagination
+              v-model:current-page="currentPage"
+              v-model:page-size="pageSize"
+              :total="sortedAndFilteredComments.length"
+              :page-sizes="[5, 10, 20, 50]"
+              layout="total, sizes, prev, pager, next"
+              style="margin-top: 20px;"
+            />
+          </template>
         </el-dialog>
       </div>
 
@@ -125,10 +217,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import type { FormInstance } from 'element-plus';
-import { Plus } from '@element-plus/icons-vue';
+import { Plus, Search } from '@element-plus/icons-vue';
 import api from '@/api/request';
 import { useUserStore } from '@/store/user';
 
@@ -200,6 +292,67 @@ const rules = {
   ]
 };
 
+// 评论相关变量
+const commentSearchQuery = ref('');
+const commentSortBy = ref('time-desc');
+const commentFilterBy = ref('all');
+const currentPage = ref(1);
+const pageSize = ref(10);
+const loading = ref(false);
+
+// 添加评论缓存
+const commentCache = new Map<number, CommentItem[]>();
+
+// 格式化日期的函数
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+// 评论过滤和排序的计算属性
+const sortedAndFilteredComments = computed(() => {
+  let result = [...comments.value];
+
+  // 搜索过滤
+  if (commentSearchQuery.value) {
+    const query = commentSearchQuery.value.toLowerCase();
+    result = result.filter(comment => 
+      comment.description?.toLowerCase().includes(query)
+    );
+  }
+
+  // 评论类型过滤
+  if (commentFilterBy.value !== 'all') {
+    result = result.filter(comment => 
+      commentFilterBy.value === 'good' ? comment.degree >= 4 : comment.degree < 4
+    );
+  }
+
+  // 排序
+  result.sort((a, b) => {
+    switch (commentSortBy.value) {
+      case 'time-desc':
+        return new Date(b.createTime).getTime() - new Date(a.createTime).getTime();
+      case 'time-asc':
+        return new Date(a.createTime).getTime() - new Date(b.createTime).getTime();
+      case 'degree-desc':
+        return b.degree - a.degree;
+      case 'degree-asc':
+        return a.degree - b.degree;
+      default:
+        return 0;
+    }
+  });
+
+  return result;
+});
+
 onMounted(async () => {
   await fetchGoods();
 });
@@ -236,21 +389,41 @@ const openDialog = (item: GoodsItem) => {
 };
 
 const commentDialog = async (item: GoodsItem) => {
+  loading.value = true;
   try {
+    // 检查缓存
+    if (commentCache.has(item.id)) {
+      comments.value = commentCache.get(item.id) || [];
+      loading.value = false;
+      commentDialogVisible.value = true;
+      return;
+    }
+
     const response = await api.get('/user/goods/comment/'+item.id, {
       headers: {
         authorization: UserStore.authorization
       }
     });
-    comments.value = response.data.data; // 将获取到的数据赋值给comments
-    console.log("商品评论信息", comments.value);
-    commentDialogVisible.value = true; // 显示评论弹窗
-  }
-  catch (error) {
+    
+    if (response.data.code === 200) {
+      comments.value = response.data.data;
+      // 更新缓存
+      commentCache.set(item.id, comments.value);
+      console.log("商品评论信息", comments.value);
+    } else {
+      ElMessage.warning('暂无评论数据');
+      comments.value = [];
+    }
+  } catch (error) {
     console.error('获取商品评论信息失败：', error);
     ElMessage.error('获取商品评论信息失败');
+    comments.value = [];
+  } finally {
+    loading.value = false;
+    commentDialogVisible.value = true;
   }
-}
+};
+
 const handleCancel = () => {
   dialogVisible.value = false;
   formRef.value?.resetFields();
